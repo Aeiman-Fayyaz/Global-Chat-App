@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔥FireChat | Connect Globally</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <!-- SweetAlert -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'fire-primary': '#461220',
+                        'fire-secondary': '#8C2F39',
+                        'fire-accent': '#B23A48',
+                        'fire-light-accent': '#FCB9B2',
+                        'fire-light': '#FED0BB',
+                        'fire-dark-bg': '#0f0508',
+                        'fire-dark-card': '#1a0a0e',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gradient-to-br from-fire-light to-fire-light-accent dark:bg-gradient-to-br dark:from-fire-dark-bg dark:to-fire-secondary min-h-screen transition-colors duration-300">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-12">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-fire text-3xl text-fire-primary dark:text-fire-light-accent"></i>
+                <h1 class="text-3xl font-bold text-fire-primary dark:text-fire-light-accent">FireChat</h1>
+            </div>
+            <button id="theme-toggle"
+                class="p-3 rounded-full bg-white dark:bg-fire-dark-card shadow-lg text-fire-accent dark:text-fire-light-accent hover:scale-110 transition-transform">
+                <i class="fas fa-moon dark:hidden"></i>
+                <i class="fas fa-sun hidden dark:block"></i>
+            </button>
+        </header>
+
+        <!-- Hero Section -->
+        <div class="text-center mb-12 max-w-2xl mx-auto" data-aos="fade-up">
+            <h1
+                class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-fire-primary to-fire-accent dark:from-fire-light-accent dark:to-fire-light bg-clip-text text-transparent mb-4">
+                Connect with the World
+            </h1>
+            <p class="text-lg text-fire-secondary dark:text-fire-light-accent">
+                Join FireChat to connect with people globally. Share ideas, make friends, and build communities across
+                borders.
+            </p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="flex flex-col lg:flex-row items-center justify-center gap-8 max-w-6xl mx-auto">
+            <!-- Illustration -->
+            <div class="lg:w-1/2" data-aos="fade-right">
+                <div
+                    class="bg-gradient-to-br from-fire-primary to-fire-accent dark:from-fire-light-accent dark:to-fire-light rounded-2xl p-8 h-96 flex items-center justify-center shadow-xl">
+                    <div class="text-center text-white dark:text-fire-dark-bg">
+                        <i class="fas fa-comments text-8xl mb-4 animate-bounce"></i>
+                        <h3 class="text-2xl font-bold">Global Conversations</h3>
+                        <p class="mt-2 opacity-90">Connect instantly with people worldwide</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Auth Card -->
+            <div class="lg:w-1/2 w-full max-w-md" data-aos="fade-left">
+                <div class="bg-white dark:bg-fire-dark-card rounded-2xl shadow-xl p-8">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-fire-primary dark:text-fire-light-accent mb-2">
+                            Join FireChat
+                        </h2>
+                        <p class="text-fire-secondary dark:text-fire-light-accent">
+                            Login or create an account to get started
+                        </p>
+                    </div>
+
+                    <form class="space-y-6">
+                        <!-- Email Input -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                                Email Address
+                            </label>
+                            <input type="email" placeholder="Enter your email"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-fire-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-fire-accent dark:bg-fire-dark-bg dark:text-white transition-colors"
+                                required>
+                        </div>
+
+                        <!-- Password Input -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+                                Password
+                            </label>
+                            <input type="password" placeholder="Enter your password"
+                                class="w-full px-4 py-3 border border-gray-300 dark:border-fire-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-fire-accent dark:bg-fire-dark-bg dark:text-white transition-colors"
+                                required>
+                            <p class="text-sm text-fire-secondary dark:text-fire-light-accent mt-2">
+                                Password must be at least 6 characters
+                            </p>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="flex space-x-4">
+                            <button type="button" id="login-btn"
+                                class="flex-1 bg-fire-accent hover:bg-fire-secondary text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-300">
+                                Login
+                            </button>
+                            <button type="button" id="signup-btn"
+                                class="flex-1 bg-fire-primary hover:bg-fire-secondary text-white py-3 px-4 rounded-lg font-semibold transition-colors duration-300">
+                                Sign Up
+                            </button>
+                        </div>
+
+                        <!-- Divider -->
+                        <div class="relative my-6">
+                            <div class="absolute inset-0 flex items-center">
+                                <div class="w-full border-t border-gray-300 dark:border-fire-secondary"></div>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span
+                                    class="px-2 bg-white dark:bg-fire-dark-card text-gray-500 dark:text-fire-light-accent">
+                                    or continue with
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Google Button -->
+                        <button type="button" id="google-btn"
+                            class="w-full border border-gray-300 dark:border-fire-secondary bg-white dark:bg-fire-dark-bg text-gray-700 dark:text-white py-3 px-4 rounded-lg font-semibold hover:border-fire-accent transition-colors duration-300 flex items-center justify-center space-x-2">
+                            <i class="fab fa-google text-red-500"></i>
+                            <span>Continue with Google</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="text-center mt-12">
+            <p class="text-fire-secondary dark:text-fire-light-accent">
+                © 2023 FireChat. All rights reserved. | Connect Globally, Chat Freely
+            </p>
+        </footer>
+    </div>
+
+    <!-- OUr JS -->
+     <script type="module" src="./script/loginAuth.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            once: true
+        });
+
+        
+
+        // Button click handlers
+        document.getElementById('login-btn').addEventListener('click', () => {
+            Swal.fire({
+                title: 'Login',
+                text: 'Login functionality would be implemented here',
+                icon: 'info',
+                confirmButtonColor: '#B23A48'
+            });
+        });
+
+        document.getElementById('signup-btn').addEventListener('click', () => {
+            Swal.fire({
+                title: 'Sign Up',
+                text: 'Sign up functionality would be implemented here',
+                icon: 'info',
+                confirmButtonColor: '#B23A48'
+            });
+        });
+
+        document.getElementById('google-btn').addEventListener('click', () => {
+            Swal.fire({
+                title: 'Google Authentication',
+                text: 'Google authentication would be implemented here',
+                icon: 'info',
+                confirmButtonColor: '#B23A48'
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,19 @@
+
+.theme-transition {
+  transition: all 0.3s ease;
+}
+
+.card-shadow {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #461220 0%, #8c2f39 100%);
+}
+
+.gradient-text {
+  background: linear-gradient(135deg, #b23a48 0%, #fcb9b2 100%);
+  /* -webkit-background-clip: text;2 */
+  -webkit-text-fill-color: transparent;
+}
