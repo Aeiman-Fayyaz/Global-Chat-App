@@ -3,10 +3,10 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
 import {
   getAuth,
-  createWithEmailAndPassword,
-  SignInWithEmailAndPassword,
+  // createWithEmailAndPassword,
+  // SignInWithEmailAndPassword,
   GoogleAuthProvider,
-  OnAuthStateChanged,
+  // OnAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 // Firebase configuration
 const firebaseConfig = {
@@ -45,4 +45,16 @@ themeToggle.addEventListener("click", () => {
     ? "dark"
     : "light";
   localStorage.setItem("theme", theme);
+});
+
+// Username Continue Button Redirect to Chat App
+document.getElementById("user-btn")?.addEventListener("click", () => {
+  Swal.fire({
+    position: "top-end",
+    icon: "success",
+    title: "Continue to FireChat 🔥",
+    showConfirmButton: false,
+    timer: 1500,
+  });
+  window.location.href = "chat.html";
 });

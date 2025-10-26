@@ -3,10 +3,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebas
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
 import {
   getAuth,
-  createWithEmailAndPassword,
-  SignInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
-  OnAuthStateChanged,
+  signOut,
+  // OnAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
 // Firebase configuration
@@ -46,4 +47,88 @@ themeToggle.addEventListener("click", () => {
     ? "dark"
     : "light";
   localStorage.setItem("theme", theme);
+});
+
+// Signup - Create New User
+document.getElementById("signup-btn")?.addEventListener("click", () => {
+  // getting email
+  const email = document.getElementById("email").value;
+  console.log(email);
+  const password = document.getElementById("password").value;
+  console.log(password);
+  // Firebase method - Creating new user
+  createUserWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Login Sucessful",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      window.location.href = "username.html";
+    })
+    .catch((error) => {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Login Failed",
+        footer: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
+});
+
+// Login - Existing User
+document.getElementById("login-btn")?.addEventListener("click", () => {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  // Firebase Method - Existing User
+  signInWithEmailAndPassword(auth, email, password)
+    .then(() => {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Login Sucessful",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      window.location.href = "username.html";
+    })
+    .catch((error) => {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Login Failed",
+        footer: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
+});
+
+// Signout
+document.getElementById("logout-btn")?.addEventListener("click", () => {
+  signOut(auth)
+    .then(() => {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Logiout Sucessful",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Logout Failed",
+        footer: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
 });

@@ -98,7 +98,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                                 Email Address
                             </label>
-                            <input type="email" placeholder="Enter your email"
+                            <input type="email" id="email" placeholder="Enter your email" 
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-fire-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-fire-accent dark:bg-fire-dark-bg dark:text-white transition-colors"
                                 required>
                         </div>
@@ -108,7 +108,7 @@
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                                 Password
                             </label>
-                            <input type="password" placeholder="Enter your password"
+                            <input type="password" id="password" placeholder="Enter your password"
                                 class="w-full px-4 py-3 border border-gray-300 dark:border-fire-secondary rounded-lg focus:outline-none focus:ring-2 focus:ring-fire-accent dark:bg-fire-dark-bg dark:text-white transition-colors"
                                 required>
                             <p class="text-sm text-fire-secondary dark:text-fire-light-accent mt-2">
@@ -168,36 +168,6 @@
         AOS.init({
             duration: 800,
             once: true
-        });
-
-        
-
-        // Button click handlers
-        document.getElementById('login-btn').addEventListener('click', () => {
-            Swal.fire({
-                title: 'Login',
-                text: 'Login functionality would be implemented here',
-                icon: 'info',
-                confirmButtonColor: '#B23A48'
-            });
-        });
-
-        document.getElementById('signup-btn').addEventListener('click', () => {
-            Swal.fire({
-                title: 'Sign Up',
-                text: 'Sign up functionality would be implemented here',
-                icon: 'info',
-                confirmButtonColor: '#B23A48'
-            });
-        });
-
-        document.getElementById('google-btn').addEventListener('click', () => {
-            Swal.fire({
-                title: 'Google Authentication',
-                text: 'Google authentication would be implemented here',
-                icon: 'info',
-                confirmButtonColor: '#B23A48'
-            });
         });
     </script>
 </body>

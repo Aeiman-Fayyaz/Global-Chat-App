@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <!-- Configure Tailwind with custom colors -->
     <script>
         tailwind.config = {
@@ -40,7 +40,8 @@
         <h4 class="text-xl font-bold text-accent dark:text-light1 flex items-center">
             <span class="mr-2">🔥</span> FireChat
         </h4>
-        <button id="theme-toggle" class="p-2 rounded-full bg-light1 dark:bg-accent text-primary dark:text-white theme-transition">
+        <button id="theme-toggle"
+            class="p-2 rounded-full bg-light1 dark:bg-accent text-primary dark:text-white theme-transition">
             <i class="fas fa-sun dark:hidden"></i>
             <i class="fas fa-moon hidden dark:block"></i>
         </button>
@@ -51,31 +52,34 @@
         <!-- Hero Section -->
         <div class="text-center mb-12" data-aos="fade-up">
             <h1 class="text-4xl md:text-5xl font-bold text-primary dark:text-light1 mb-4">Welcome to FireChat</h1>
-            <h4 class="text-xl text-secondary dark:text-light2">Globally connect here and talk to Everyone <span class="text-accent">❤</span></h4>
+            <h4 class="text-xl text-secondary dark:text-light2">Globally connect here and talk to Everyone <span
+                    class="text-accent">❤</span></h4>
         </div>
 
         <!-- Login/Signup Card -->
-        <div class="max-w-md mx-auto bg-white dark:bg-secondary rounded-xl card-shadow overflow-hidden theme-transition" data-aos="zoom-in">
+        <div class="max-w-md mx-auto bg-white dark:bg-secondary rounded-xl card-shadow overflow-hidden theme-transition"
+            data-aos="zoom-in">
             <div class="p-6">
-                <h1 class="text-2xl font-bold text-center text-primary dark:text-light1 mb-6">Login & Signup</h1>
-                
+                <h1 class="text-2xl font-bold text-center text-primary dark:text-light1 mb-6">User Credentials</h1>
+
                 <div class="space-y-6">
                     <div>
-                        <label for="email" class="block text-sm font-medium text-primary dark:text-light2 mb-1">Email Address</label>
-                        <input type="email" id="email" name="email" 
+                        <label for="email" class="block text-sm font-medium text-primary dark:text-light2 mb-1">Email
+                            Address</label>
+                        <input type="email" id="email" name="email"
                             class="w-full px-4 py-2 border border-light1 dark:border-accent rounded-lg focus:outline-none focus:ring-2 focus:ring-accent bg-white dark:bg-primary text-primary dark:text-white theme-transition"
                             placeholder="Enter your email address">
                     </div>
-                    
+
                     <div>
-                        <label for="password" class="block text-sm font-medium text-primary dark:text-light2 mb-1">Password</label>
-                        <input type="password" id="password" name="password" 
+                        <label for="password"
+                            class="block text-sm font-medium text-primary dark:text-light2 mb-1">Username</label>
+                        <input type="text" id="username"
                             class="w-full px-4 py-2 border border-light1 dark:border-accent rounded-lg focus:outline-none focus:ring-2 focus:ring-accent bg-white dark:bg-primary text-primary dark:text-white theme-transition"
-                            placeholder="Enter your password">
-                        <small class="text-xs text-gray-500 dark:text-light2 mt-1 block">Password must be <b>6 characters</b></small>
+                            placeholder="Enter your good name">
                     </div>
-                    
-                    <button id="submit-btn" 
+
+                    <button id="user-btn"
                         class="w-full py-3 px-4 bg-gradient-to-r from-accent to-secondary text-white font-medium rounded-lg hover:opacity-90 transition-opacity theme-transition">
                         Continue
                     </button>
@@ -89,50 +93,17 @@
         <p>© 2025 FireChat. All rights reserved. | Made by <b>Aeiman Fayyaz</b></p>
     </footer>
 
+    <!-- Our JS -->
+    <script type="module" src="./script/app.js"></script>
+    
     <!-- AOS Animation Library -->
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    
+
     <script>
         // Initialize AOS
         AOS.init({
             duration: 800,
             once: true
-        });
-        
-        
-        // Form Submission with SweetAlert
-        document.getElementById('submit-btn').addEventListener('click', () => {
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            // Simple validation
-            if (!email || !password) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Missing Information',
-                    text: 'Please fill in both email and password fields.',
-                    confirmButtonColor: '#B23A48'
-                });
-                return;
-            }
-            
-            if (password.length < 6) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Invalid Password',
-                    text: 'Password must be at least 6 characters long.',
-                    confirmButtonColor: '#B23A48'
-                });
-                return;
-            }
-            
-            // Simulate successful submission
-            Swal.fire({
-                icon: 'success',
-                title: 'Welcome to FireChat!',
-                text: 'You are now connected to the global chat community.',
-                confirmButtonColor: '#B23A48'
-            });
         });
     </script>
 </body>
