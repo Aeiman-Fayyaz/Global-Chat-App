@@ -7,6 +7,7 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signOut,
+  signInWithPopup,
   // OnAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 
@@ -39,7 +40,7 @@ if (currentTheme === "dark") {
   document.documentElement.classList.add("dark");
 }
 
-themeToggle.addEventListener("click", () => {
+themeToggle?.addEventListener("click", () => {
   document.documentElement.classList.toggle("dark");
 
   // Save theme preference
@@ -107,6 +108,31 @@ document.getElementById("login-btn")?.addEventListener("click", () => {
       });
     });
 });
+
+// Continue With Google
+document.getElementById("google-btn")?.addEventListener("click" , () => {
+  signInWithPopup(auth , googleProvider)
+  .then(() => {
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Login Sucessful",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      window.location.href = "username.html";
+    })
+    .catch((error) => {
+      Swal.fire({
+        position: "top-end",
+        icon: "error",
+        title: "Login Failed",
+        footer: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
+})
 
 // Signout
 document.getElementById("logout-btn")?.addEventListener("click", () => {
