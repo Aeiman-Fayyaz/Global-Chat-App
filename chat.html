@@ -4,16 +4,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    <button type="button" id="logout-btn">Logout</button>
-
-
+    <title>🔥FireChat | Chat App</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS CSS -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="module" src="./script/loginAuth.js"></script>
+    <!-- Our CSS -->
+    <link rel="stylesheet" href="style.css">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        'fire-primary': '#461220',
+                        'fire-secondary': '#8C2F39',
+                        'fire-accent': '#B23A48',
+                        'fire-light-accent': '#FCB9B2',
+                        'fire-light': '#FED0BB',
+                        'fire-dark-bg': '#0f0508',
+                        'fire-dark-card': '#1a0a0e',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body class="min-h-screen p-4 bg-fire-light dark:bg-fire-dark-bg transition-colors duration-300">
+    <!-- Main Container -->
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-12" data-aos="fade-down">
+            <div class="flex items-center space-x-3">
+                <i class="fas fa-fire text-3xl text-fire-primary dark:text-fire-light-accent"></i>
+                <h1 class="text-3xl font-bold text-fire-primary dark:text-fire-light-accent">FireChat</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="theme-toggle"
+                    class="p-3 rounded-full bg-white dark:bg-fire-dark-card shadow-lg text-fire-accent dark:text-fire-light-accent hover:scale-110 transition-transform">
+                    <i class="fas fa-moon dark:hidden"></i>
+                    <i class="fas fa-sun hidden dark:block"></i>
+                </button>
+                <button id="logout-btn"
+                    class="bg-fire-accent text-white px-4 py-2 rounded-lg font-medium shadow-lg hover:bg-fire-secondary transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fire-light-accent">
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <!-- Chat Container -->
+        <div class="bg-white dark:bg-fire-dark-card rounded-2xl shadow-2xl p-5 " data-aos="fade-up"
+            data-aos-duration="800">
+            <!-- Chat Messages Area -->
+            <div id="chatBox"
+                class="h-96 overflow-y-auto p-4 mb-4 bg-fire-light dark:bg-fire-dark-bg dark:text-fire-light rounded-xl shadow-inner"></div>
+
+            <!-- Message Input Area -->
+            <div class="flex gap-2">
+                <input type="text" name="message" placeholder="Type your message..." id="message"
+                    class="flex-1 bg-fire-light dark:bg-fire-dark-bg text-fire-primary dark:text-fire-light p-3 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-fire-accent placeholder-fire-secondary dark:placeholder-fire-light-accent">
+                <button onclick=sendMessageBtn()
+                    class="bg-fire-accent text-white px-6 py-3 rounded-lg font-medium shadow-lg hover:bg-fire-secondary transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fire-light-accent">
+                    Send
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our JS -->
+    <script type="module" src="./script/app.js"></script>
+
+    <!-- AOS JS -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 500,
+            once: true
+        });
+    </script>
 </body>
 
 </html>
