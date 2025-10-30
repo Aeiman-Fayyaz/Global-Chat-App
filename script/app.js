@@ -1,23 +1,14 @@
-// Import the functions
+// ---------------------------
+// Import Firebase functions
+// ---------------------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-import {
-  getAuth,
-  // createWithEmailAndPassword,
-  // SignInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signOut,
+import { getAuth, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-  // OnAuthStateChanged,
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import {
-  getDatabase,
-  ref,
-  push,
-  onChildAdded,
-} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
-
+// ---------------------------
 // Firebase configuration
+// ---------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyD5FV2pZQpUa5DgkEISG6N15wvd1UEQqOw",
   authDomain: "realtime-database-d0558.firebaseapp.com",
@@ -29,59 +20,62 @@ const firebaseConfig = {
   measurementId: "G-5EYBQ3RBJ8",
 };
 
+// ---------------------------
 // Initialize Firebase
+// ---------------------------
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-const auth = getAuth();
+const auth = getAuth(app);
 const db = getDatabase(app);
 
 // Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
 
-// Theme toggle functionality
+// ---------------------------
+// Theme Toggle Functionality
+// ---------------------------
 const themeToggle = document.getElementById("theme-toggle");
-
-// Check for saved theme preference
 const currentTheme = localStorage.getItem("theme") || "light";
+
 if (currentTheme === "dark") {
   document.documentElement.classList.add("dark");
 }
 
 themeToggle?.addEventListener("click", () => {
   document.documentElement.classList.toggle("dark");
-
-  // Save theme preference
-  const theme = document.documentElement.classList.contains("dark")
-    ? "dark"
-    : "light";
+  const theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
   localStorage.setItem("theme", theme);
 });
 
-// Username Continue Button Redirect to Chat App
+// ---------------------------
+// Username Continue Button
+// ---------------------------
 document.getElementById("user-btn")?.addEventListener("click", () => {
   const username = document.getElementById("username").value.trim();
   if (!username) {
     Swal.fire({
       position: "top-end",
       icon: "error",
-      title: "Username must be enter",
+      title: "Username must be entered",
       showConfirmButton: false,
       timer: 500,
     });
     return;
   }
-  localStorage.setItem("username" , username)
+  localStorage.setItem("username", username);
   window.location.href = "chat.html";
 });
 
-// Signout
+// ---------------------------
+// Sign Out Functionality
+// ---------------------------
 document.getElementById("logout-btn")?.addEventListener("click", () => {
   signOut(auth)
     .then(() => {
       Swal.fire({
         position: "top-end",
         icon: "success",
-        title: "Logiout Sucessful",
+        title: "Logout Successful",
         showConfirmButton: false,
         timer: 500,
       });
@@ -98,51 +92,51 @@ document.getElementById("logout-btn")?.addEventListener("click", () => {
       });
     });
 });
-const currentUsername = localStorage.getItem("username")
 
-// Chat Functions
-function createMessageElement(data, messageId, currentUsername) {
+// ---------------------------
+// Chat Messaging Functions
+// ---------------------------
+const currentUsername = localStorage.getItem("username");
+
+function createMessageElement(data) {
   const container = document.createElement("div");
   container.classList.add("msg-container");
-  container.classList.add(
-    data.currentUsername === currentUsername ? "sent" : "received"
-  );
+  container.classList.add(data.currentUsername === currentUsername ? "sent" : "received");
 
-  // Number of Messages
-  const wrapper = document.createElement("div");
-  wrapper.classList.add("message-wrapper");
-
-  // DP container - Initial
   const letterCircle = document.createElement("div");
   letterCircle.classList.add("letterCircle");
   letterCircle.textContent = data.currentUsername.charAt(0).toUpperCase();
 
-   // Append elements
-  container.appendChild(letterCircle);
-  // container.appendChild(messageText);
+  const messageText = document.createElement("div");
+  messageText.classList.add("message-text");
+  messageText.textContent = data.text;
 
-  return container
+  container.appendChild(letterCircle);
+  container.appendChild(messageText);
+
+  return container;
 }
 
-// Make Message Globally
 window.sendMessageBtn = function () {
-  const message = document.getElementById("message").value;
-  // const username = document.getElementById("username").value
-
-  // Push Message to Firebase
+  const message = document.getElementById("message").value.trim();
+  if (message === "") return;
+  
   push(ref(db, "messages"), {
-    // name : username ,
     text: message,
+    currentUsername: currentUsername,
   });
-  document.getElementById("message").value = ""; // Clear Input
+  document.getElementById("message").value = "";
 };
 
-// Function for new Messages and Print
-onChildAdded(ref(db, "messages"), function (snapshot) {
-  let data = snapshot.val();
-  let chatBox = document.getElementById("chatBox");
-  let msgElement = document.createElement("p");
-  msgElement.textContent = data.text;
-  chatBox.appendChild(msgElement);
-  chatBox.scrollTop = chatBox.scrollHeight;
+// ---------------------------
+// Listen for New Messages
+// ---------------------------
+onChildAdded(ref(db, "messages"), (snapshot) => {
+  const data = snapshot.val();
+  const chatBox = document.getElementById("chatBox");
+  if (chatBox) {
+    const msgElement = createMessageElement(data);
+    chatBox.appendChild(msgElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
 });
