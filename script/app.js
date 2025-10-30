@@ -1,14 +1,19 @@
-// ---------------------------
 // Import Firebase functions
-// ---------------------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-analytics.js";
-import { getAuth, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getDatabase, ref, push, onChildAdded } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signOut,
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+  getDatabase,
+  ref,
+  push,
+  onChildAdded,
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
-// ---------------------------
 // Firebase configuration
-// ---------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyD5FV2pZQpUa5DgkEISG6N15wvd1UEQqOw",
   authDomain: "realtime-database-d0558.firebaseapp.com",
@@ -20,9 +25,7 @@ const firebaseConfig = {
   measurementId: "G-5EYBQ3RBJ8",
 };
 
-// ---------------------------
 // Initialize Firebase
-// ---------------------------
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
@@ -31,9 +34,7 @@ const db = getDatabase(app);
 // Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
 
-// ---------------------------
 // Theme Toggle Functionality
-// ---------------------------
 const themeToggle = document.getElementById("theme-toggle");
 const currentTheme = localStorage.getItem("theme") || "light";
 
@@ -43,13 +44,13 @@ if (currentTheme === "dark") {
 
 themeToggle?.addEventListener("click", () => {
   document.documentElement.classList.toggle("dark");
-  const theme = document.documentElement.classList.contains("dark") ? "dark" : "light";
+  const theme = document.documentElement.classList.contains("dark")
+    ? "dark"
+    : "light";
   localStorage.setItem("theme", theme);
 });
 
-// ---------------------------
 // Username Continue Button
-// ---------------------------
 document.getElementById("user-btn")?.addEventListener("click", () => {
   const username = document.getElementById("username").value.trim();
   if (!username) {
@@ -66,9 +67,7 @@ document.getElementById("user-btn")?.addEventListener("click", () => {
   window.location.href = "chat.html";
 });
 
-// ---------------------------
 // Sign Out Functionality
-// ---------------------------
 document.getElementById("logout-btn")?.addEventListener("click", () => {
   signOut(auth)
     .then(() => {
@@ -93,15 +92,15 @@ document.getElementById("logout-btn")?.addEventListener("click", () => {
     });
 });
 
-// ---------------------------
 // Chat Messaging Functions
-// ---------------------------
 const currentUsername = localStorage.getItem("username");
 
 function createMessageElement(data) {
   const container = document.createElement("div");
   container.classList.add("msg-container");
-  container.classList.add(data.currentUsername === currentUsername ? "sent" : "received");
+  container.classList.add(
+    data.currentUsername === currentUsername ? "sent" : "received"
+  );
 
   const letterCircle = document.createElement("div");
   letterCircle.classList.add("letterCircle");
@@ -120,7 +119,7 @@ function createMessageElement(data) {
 window.sendMessageBtn = function () {
   const message = document.getElementById("message").value.trim();
   if (message === "") return;
-  
+
   push(ref(db, "messages"), {
     text: message,
     currentUsername: currentUsername,
@@ -128,9 +127,7 @@ window.sendMessageBtn = function () {
   document.getElementById("message").value = "";
 };
 
-// ---------------------------
 // Listen for New Messages
-// ---------------------------
 onChildAdded(ref(db, "messages"), (snapshot) => {
   const data = snapshot.val();
   const chatBox = document.getElementById("chatBox");
