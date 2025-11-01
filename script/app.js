@@ -99,7 +99,7 @@ document.getElementById("logout-btn")?.addEventListener("click", () => {
 // Chat Messaging Functions
 const currentUsername = localStorage.getItem("username");
 
-function createMessageElement(data) {
+function createMessageElement(data , messageId) {
   const container = document.createElement("div");
   container.classList.add("msg-container");
   container.classList.add(
@@ -109,7 +109,9 @@ function createMessageElement(data) {
   // Letter Circle Username Initliat
   const letterCircle = document.createElement("div");
   letterCircle.classList.add("letterCircle");
-  letterCircle.textContent = data.currentUsername ?data.currentUsername.charAt(0).toUpperCase(): "?";
+  letterCircle.textContent = data.currentUsername
+    ? data.currentUsername.charAt(0).toUpperCase()
+    : "?";
 
   // Message Text
   const messageText = document.createElement("div");
@@ -125,10 +127,13 @@ function createMessageElement(data) {
   if (data.currentUsername === currentUsername) {
     const btnContainer = document.createElement("div");
     btnContainer.classList.add("msg-actions");
-    btnContainer.innerHTML = `<button class="edit-btn" onclick="editMessage(this , '${data.text}')">
+    btnContainer.innerHTML = `<button class="edit-btn" onclick="editMessage('${messageId}' , '${data.text.replace(
+      /'/g,
+      "\\'"
+    )}')">
         <i class="fa-solid fa-pen"></i>
       </button>
-      <button class="delete-btn" onclick="deleteMessage(this)">
+      <button class="delete-btn" onclick="deleteMessage('${messageId}')">
         <i class="fa-solid fa-trash"></i>
       </button>`;
     messageText.appendChild(btnContainer);
@@ -165,8 +170,8 @@ window.sendMessageBtn = function () {
 };
 
 // Enter key to send message
-document.getElementById('message')?.addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
+document.getElementById("message")?.addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
     window.sendMessageBtn();
   }
 });
@@ -186,12 +191,11 @@ onChildAdded(ref(db, "messages"), (snapshot) => {
 onChildChanged(ref(db, "messages"), (snapshot) => {
   const data = snapshot.val();
   const messageId = snapshot.key;
-  const existingElement = messageElements[messageId];
-
-  // Update the Message text
-  if (existingElement) {
-    existingElement.classList.add("message-text");
-    existingElement.firstChild.textContent = data.text;
+  const chatBox = document.getElementById("chatBox");
+  if (chatBox) {
+    const msgElement = createMessageElement(data, messageId); 
+    chatBox.appendChild(msgElement);
+    chatBox.scrollTop = chatBox.scrollHeight;
   }
 });
 
@@ -226,7 +230,7 @@ window.editMessage = function (messageId, currentText) {
         // Update in Firebase
         const messageRef = ref(db, `messages/${messageId}`);
         update(messageRef, {
-          text: result.value.trim(),
+          text: result.value ? result.value.trim() : "",
           edited: true,
           editedAt: new Date().toISOString(),
         });
@@ -251,7 +255,7 @@ window.editMessage = function (messageId, currentText) {
 
 // Delete Message
 window.deleteMessage = function (messageId) {
-  const message = messageId.closest(".message-text");
+  // const message = messageId.closest(".message-text");
 
   Swal.fire({
     title: "Are you sure?",
