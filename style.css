@@ -54,7 +54,7 @@
   background-color: #fff;
   border-radius: 12px;
   padding: 8px 40px 10px 12px; /* space on right for time */
-  max-width: 70%;
+  max-width: 90%;
   color: #333;
   font-size: 1rem;
   position: relative;
@@ -64,16 +64,58 @@
 }
 
 .time-inside {
-  position: absolute;
-  /* bottom: 4px; */
-  right: 8px;
-  padding-top: 18px;
+  position: relative;
+  left: 25px;
+  padding-top: 10px;
   font-size: 0.7rem;
   color: #1a0a0e;
   opacity: 0.8;
 }
 
+.sent .time-inside {
+  color: white;
+}
+
 .sent .message-text {
   background-color: #d9534f;
   color: white;
+}
+
+.msg-actions {
+  position: relative;
+  display: flex;
+  left: 23px;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.msg-actions button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: gray;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+
+.msg-actions button:hover {
+  color: #e74c3c;
+}
+
+.sent .msg-actions button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #f5e8e8;
+  font-size: 0.9rem;
+  transition: color 0.2s;
+}
+.sent .msg-actions button:hover {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #0f0508;
+  font-size: 0.9rem;
+  transition: color 0.2s;
 }

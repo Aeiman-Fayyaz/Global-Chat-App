@@ -11,6 +11,10 @@ import {
   ref,
   push,
   onChildAdded,
+  update,
+  remove,
+  onChildRemoved,
+  onChildChanged,
 } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-database.js";
 
 // Firebase configuration
@@ -105,7 +109,7 @@ function createMessageElement(data) {
   // Letter Circle Username Initliat
   const letterCircle = document.createElement("div");
   letterCircle.classList.add("letterCircle");
-  letterCircle.textContent = data.currentUsername.charAt(0).toUpperCase();
+  letterCircle.textContent = data.currentUsername ?data.currentUsername.charAt(0).toUpperCase(): "?";
 
   // Message Text
   const messageText = document.createElement("div");
@@ -113,14 +117,27 @@ function createMessageElement(data) {
   messageText.textContent = data.text;
 
   // Time and Day
-  const timeText = document.createElement("span")
-  timeText.classList.add("time-inside")
-  timeText.textContent = `${data.day} . ${data.time}`
+  const timeText = document.createElement("span");
+  timeText.classList.add("time-inside");
+  timeText.textContent = `${data.day} . ${data.time}`;
+
+  // Edit Delete Buttons Container
+  if (data.currentUsername === currentUsername) {
+    const btnContainer = document.createElement("div");
+    btnContainer.classList.add("msg-actions");
+    btnContainer.innerHTML = `<button class="edit-btn" onclick="editMessage(this , '${data.text}')">
+        <i class="fa-solid fa-pen"></i>
+      </button>
+      <button class="delete-btn" onclick="deleteMessage(this)">
+        <i class="fa-solid fa-trash"></i>
+      </button>`;
+    messageText.appendChild(btnContainer);
+  }
 
   // Append Childs
   container.appendChild(letterCircle);
   container.appendChild(messageText);
-  messageText.appendChild(timeText)
+  messageText.appendChild(timeText);
 
   return container;
 }
@@ -137,7 +154,7 @@ window.sendMessageBtn = function () {
     minute: "2-digit",
   });
   // For Day
-  const day = now.toLocaleDateString([] , {weekday: "short"})
+  const day = now.toLocaleDateString([], { weekday: "short" });
   push(ref(db, "messages"), {
     text: message,
     currentUsername: currentUsername,
@@ -146,6 +163,13 @@ window.sendMessageBtn = function () {
   });
   document.getElementById("message").value = "";
 };
+
+// Enter key to send message
+document.getElementById('message')?.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    window.sendMessageBtn();
+  }
+});
 
 // Listen for New Messages
 onChildAdded(ref(db, "messages"), (snapshot) => {
@@ -157,3 +181,108 @@ onChildAdded(ref(db, "messages"), (snapshot) => {
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 });
+
+// Listen for Edit Messages
+onChildChanged(ref(db, "messages"), (snapshot) => {
+  const data = snapshot.val();
+  const messageId = snapshot.key;
+  const existingElement = messageElements[messageId];
+
+  // Update the Message text
+  if (existingElement) {
+    existingElement.classList.add("message-text");
+    existingElement.firstChild.textContent = data.text;
+  }
+});
+
+// Listen for Message Deletions
+onChildRemoved(ref(db, "messages"), (snapshot) => {
+  const messageId = snapshot.key;
+  const existingElement = messageElements[messageId];
+
+  if (existingElement) {
+    existingElement.remove();
+    delete messageElements[messageId];
+  }
+});
+
+// Edit Message
+window.editMessage = function (messageId, currentText) {
+  Swal.fire({
+    title: "Edit Message",
+    input: "text",
+    inputValue: currentText,
+    showCancelButton: true,
+    confirmButtonText: "Save",
+    cancelButtonText: "Cancel",
+    background: "#fff",
+    color: "#333",
+    // inputValidator: (value ) => {
+    //   if (!value) return "Please enter something!";
+    // },
+  })
+    .then((result) => {
+      if (result.isConfirmed) {
+        // Update in Firebase
+        const messageRef = ref(db, `messages/${messageId}`);
+        update(messageRef, {
+          text: result.value.trim(),
+          edited: true,
+          editedAt: new Date().toISOString(),
+        });
+        Swal.fire({
+          icon: "success",
+          title: "Message Updated!",
+          showConfirmButton: false,
+          timer: 1200,
+        });
+      }
+    })
+    .catch((error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: error.message,
+        showConfirmButton: false,
+        timer: 1500,
+      });
+    });
+};
+
+// Delete Message
+window.deleteMessage = function (messageId) {
+  const message = messageId.closest(".message-text");
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: "This message will be deleted permanently.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d14141",
+    cancelButtonColor: "#6c757d",
+    confirmButtonText: "Yes, delete it!",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      // Delete in Firebase
+      const messageRef = ref(db, `messages/${messageId}`);
+      remove(messageRef)
+        .then(() => {
+          Swal.fire({
+            icon: "success",
+            title: "Deleted!",
+            showConfirmButton: false,
+            timer: 1200,
+          });
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Delete Failed",
+            text: error.message,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        });
+    }
+  });
+};
