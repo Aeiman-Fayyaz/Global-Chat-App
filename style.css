@@ -53,9 +53,24 @@
 .message-text {
   background-color: #fff;
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 8px 40px 10px 12px; /* space on right for time */
   max-width: 70%;
   color: #333;
+  font-size: 1rem;
+  position: relative;
+  word-wrap: break-word;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+}
+
+.time-inside {
+  position: absolute;
+  /* bottom: 4px; */
+  right: 8px;
+  padding-top: 18px;
+  font-size: 0.7rem;
+  color: #1a0a0e;
+  opacity: 0.8;
 }
 
 .sent .message-text {

@@ -102,16 +102,25 @@ function createMessageElement(data) {
     data.currentUsername === currentUsername ? "sent" : "received"
   );
 
+  // Letter Circle Username Initliat
   const letterCircle = document.createElement("div");
   letterCircle.classList.add("letterCircle");
   letterCircle.textContent = data.currentUsername.charAt(0).toUpperCase();
 
+  // Message Text
   const messageText = document.createElement("div");
   messageText.classList.add("message-text");
   messageText.textContent = data.text;
 
+  // Time and Day
+  const timeText = document.createElement("span")
+  timeText.classList.add("time-inside")
+  timeText.textContent = `${data.day} . ${data.time}`
+
+  // Append Childs
   container.appendChild(letterCircle);
   container.appendChild(messageText);
+  messageText.appendChild(timeText)
 
   return container;
 }
@@ -120,9 +129,20 @@ window.sendMessageBtn = function () {
   const message = document.getElementById("message").value.trim();
   if (message === "") return;
 
+  // Time and Date
+  const now = new Date();
+  // For Time
+  const time = now.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  // For Day
+  const day = now.toLocaleDateString([] , {weekday: "short"})
   push(ref(db, "messages"), {
     text: message,
     currentUsername: currentUsername,
+    time: time,
+    day: day,
   });
   document.getElementById("message").value = "";
 };
