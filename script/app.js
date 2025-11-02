@@ -38,7 +38,8 @@ const db = getDatabase(app);
 // Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
 
-// Theme Toggle Functionality
+// Theme Toggle
+
 const themeToggle = document.getElementById("theme-toggle");
 const currentTheme = localStorage.getItem("theme") || "light";
 
@@ -71,7 +72,7 @@ document.getElementById("user-btn")?.addEventListener("click", () => {
   window.location.href = "chat.html";
 });
 
-// Sign Out Functionality
+// Sign Out
 document.getElementById("logout-btn")?.addEventListener("click", () => {
   signOut(auth)
     .then(() => {
@@ -96,17 +97,20 @@ document.getElementById("logout-btn")?.addEventListener("click", () => {
     });
 });
 
-// Chat Messaging Functions
+// Username Get
 const currentUsername = localStorage.getItem("username");
+let messageElements = {};
 
-function createMessageElement(data , messageId) {
+// Message Function
+function createMessageElement(data, messageId) {
   const container = document.createElement("div");
   container.classList.add("msg-container");
   container.classList.add(
     data.currentUsername === currentUsername ? "sent" : "received"
   );
+  container.id = messageId;
 
-  // Letter Circle Username Initliat
+  // Letter Circle
   const letterCircle = document.createElement("div");
   letterCircle.classList.add("letterCircle");
   letterCircle.textContent = data.currentUsername
@@ -116,56 +120,47 @@ function createMessageElement(data , messageId) {
   // Message Text
   const messageText = document.createElement("div");
   messageText.classList.add("message-text");
-  messageText.textContent = data.text;
+  messageText.innerHTML = `
+    ${data.text}
+    <span class="time-inside">${data.day} . ${data.time}</span>
+    ${
+      data.currentUsername === currentUsername
+        ? `
+      <div class="msg-actions">
+        <button class="edit-btn" onclick="editMessage('${messageId}' , '${data.text.replace(
+          /'/g,
+          "\\'"
+        )}')"> <i class="fa-solid fa-pen"></i> </button>
+        <button class="delete-btn" onclick="deleteMessage('${messageId}')"> <i class="fa-solid fa-trash"></i> </button>
+      </div>
+    `
+        : ""
+    }
+  `;
 
-  // Time and Day
-  const timeText = document.createElement("span");
-  timeText.classList.add("time-inside");
-  timeText.textContent = `${data.day} . ${data.time}`;
-
-  // Edit Delete Buttons Container
-  if (data.currentUsername === currentUsername) {
-    const btnContainer = document.createElement("div");
-    btnContainer.classList.add("msg-actions");
-    btnContainer.innerHTML = `<button class="edit-btn" onclick="editMessage('${messageId}' , '${data.text.replace(
-      /'/g,
-      "\\'"
-    )}')">
-        <i class="fa-solid fa-pen"></i>
-      </button>
-      <button class="delete-btn" onclick="deleteMessage('${messageId}')">
-        <i class="fa-solid fa-trash"></i>
-      </button>`;
-    messageText.appendChild(btnContainer);
-  }
-
-  // Append Childs
   container.appendChild(letterCircle);
   container.appendChild(messageText);
-  messageText.appendChild(timeText);
 
+  messageElements[messageId] = container;
   return container;
 }
 
+// Send Message
 window.sendMessageBtn = function () {
   const message = document.getElementById("message").value.trim();
   if (message === "") return;
 
-  // Time and Date
   const now = new Date();
-  // For Time
-  const time = now.toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  // For Day
+  const time = now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   const day = now.toLocaleDateString([], { weekday: "short" });
+
   push(ref(db, "messages"), {
     text: message,
     currentUsername: currentUsername,
     time: time,
     day: day,
   });
+
   document.getElementById("message").value = "";
 };
 
@@ -176,34 +171,46 @@ document.getElementById("message")?.addEventListener("keypress", function (e) {
   }
 });
 
-// Listen for New Messages
+// New Message Listener
 onChildAdded(ref(db, "messages"), (snapshot) => {
   const data = snapshot.val();
   const chatBox = document.getElementById("chatBox");
   if (chatBox) {
-    const msgElement = createMessageElement(data);
+    const msgElement = createMessageElement(data, snapshot.key);
     chatBox.appendChild(msgElement);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
 });
 
-// Listen for Edit Messages
+// Update Message Listener
 onChildChanged(ref(db, "messages"), (snapshot) => {
   const data = snapshot.val();
-  const messageId = snapshot.key;
-  const chatBox = document.getElementById("chatBox");
-  if (chatBox) {
-    const msgElement = createMessageElement(data, messageId); 
-    chatBox.appendChild(msgElement);
-    chatBox.scrollTop = chatBox.scrollHeight;
+  const existingElement = messageElements[snapshot.key];
+  if (existingElement) {
+    existingElement.querySelector(".message-text").innerHTML = `
+      ${data.text}
+      <span class="time-inside">${data.day} . ${data.time}</span>
+      ${
+        data.currentUsername === currentUsername
+          ? `
+        <div class="msg-actions">
+          <button class="edit-btn" onclick="editMessage('${snapshot.key}' , '${data.text.replace(
+            /'/g,
+            "\\'"
+          )}')"> <i class="fa-solid fa-pen"></i> </button>
+          <button class="delete-btn" onclick="deleteMessage('${snapshot.key}')"> <i class="fa-solid fa-trash"></i> </button>
+        </div>
+      `
+          : ""
+      }
+    `;
   }
 });
 
-// Listen for Message Deletions
+// Delete Message Listener
 onChildRemoved(ref(db, "messages"), (snapshot) => {
   const messageId = snapshot.key;
   const existingElement = messageElements[messageId];
-
   if (existingElement) {
     existingElement.remove();
     delete messageElements[messageId];
@@ -221,13 +228,9 @@ window.editMessage = function (messageId, currentText) {
     cancelButtonText: "Cancel",
     background: "#fff",
     color: "#333",
-    // inputValidator: (value ) => {
-    //   if (!value) return "Please enter something!";
-    // },
   })
     .then((result) => {
       if (result.isConfirmed) {
-        // Update in Firebase
         const messageRef = ref(db, `messages/${messageId}`);
         update(messageRef, {
           text: result.value ? result.value.trim() : "",
@@ -255,8 +258,6 @@ window.editMessage = function (messageId, currentText) {
 
 // Delete Message
 window.deleteMessage = function (messageId) {
-  // const message = messageId.closest(".message-text");
-
   Swal.fire({
     title: "Are you sure?",
     text: "This message will be deleted permanently.",
@@ -267,7 +268,6 @@ window.deleteMessage = function (messageId) {
     confirmButtonText: "Yes, delete it!",
   }).then((result) => {
     if (result.isConfirmed) {
-      // Delete in Firebase
       const messageRef = ref(db, `messages/${messageId}`);
       remove(messageRef)
         .then(() => {
