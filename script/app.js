@@ -223,7 +223,7 @@ function createMessageElement(data, messageId) {
 
   if (data.type === "audio") {
     const audioSrc = data.audioData;
-    messageText.classList.add("message-audio"); 
+    messageText.classList.add("message-audio");
     messageText.innerHTML = `
       <audio controls src="${audioSrc}" class="audio-player"></audio>
       <span class ="time-inside-audio">${data.day} . ${data.time}</span>
@@ -237,7 +237,8 @@ function createMessageElement(data, messageId) {
           : ""
       }
     `;
-  } else {
+  } 
+  else {
     // Text Message Display
     messageText.classList.add("message-text");
     messageText.innerHTML = `
@@ -297,7 +298,7 @@ window.sendMessageBtn = async function () {
 
       push(ref(db, "messages"), {
         // Store Base64 data
-        audioData: base64Audio, 
+        audioData: base64Audio,
         type: "audio",
         currentUsername: currentUsername,
         time: time,
@@ -360,8 +361,6 @@ onChildAdded(ref(db, "messages"), (snapshot) => {
 // Update Message Listener
 onChildChanged(ref(db, "messages"), (snapshot) => {
   const data = snapshot.val();
-
-  // *** FIX: Only update if it is a text message (Voice cannot be edited) ***
   if (data.type === "audio") return;
 
   const existingElement = messageElements[snapshot.key];
@@ -477,3 +476,45 @@ window.deleteMessage = function (messageId) {
     }
   });
 };
+
+// Toggle dropdown visibility
+document.getElementById("attachmentBtn").addEventListener("click", () => {
+  const menu = document.getElementById("attachmentMenu");
+  menu.classList.toggle("hidden");
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  const btn = document.getElementById("attachmentBtn");
+  const menu = document.getElementById("attachmentMenu");
+  if (!btn.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.add("hidden");
+  }
+});
+
+// Media Upload
+function previewMedia(input, type) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    const mediaPreview = document.getElementById("mediaPreview");
+    mediaPreview.innerHTML = ""; // clear old preview
+
+    let element;
+    if (type === "image") {
+      element = document.createElement("img");
+      element.src = e.target.result;
+      element.className = "max-h-40 rounded-lg";
+    } else if (type === "video") {
+      element = document.createElement("video");
+      element.src = e.target.result;
+      element.controls = true;
+      element.className = "max-h-40 rounded-lg";
+    }
+
+    mediaPreview.appendChild(element);
+  };
+  reader.readAsDataURL(file); // convert to Base64
+}

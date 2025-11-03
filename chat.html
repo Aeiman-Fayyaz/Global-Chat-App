@@ -59,19 +59,48 @@
         </header>
 
         <!-- Chat Container -->
-        <!-- Chat Container -->
         <div class="bg-white dark:bg-fire-dark-card rounded-2xl shadow-2xl p-5" data-aos="fade-up"
             data-aos-duration="800">
             <!-- Chat Messages Area -->
             <div id="chatBox"
                 class="h-96 overflow-y-auto p-4 mb-4 bg-fire-light dark:bg-fire-dark-bg dark:text-fire-light rounded-xl shadow-inner">
-            <audio id="recorded-audio" controls class="audio-player"></audio>
+                <audio id="recorded-audio" controls class="audio-player"></audio>
+                <div id="previewMedia" class="mt-2 flex justify-center"></div>
             </div>
             <!-- Message Input Area -->
-            <div class="flex gap-2">
+            <div class="flex gap-2 chat-container">
+                <!-- Attachment Button -->
+                <div class="relative inline-block text-left">
+                    <!-- Main Attachment Button -->
+                    <button id="attachmentBtn"
+                        class="flex items-center gap-2 rounded-md bg-fire-secondary px-5 py-5 text-sm text-white hover:bg-fire-accent transition">
+                        <i class="fa-solid fa-paperclip"></i>
+                    </button>
+
+                    <!-- Hidden Dropdown Menu -->
+                    <div id="attachmentMenu"
+                        class="absolute right-0 mt-2 min-w-[9rem] max-w-[11rem] origin-top-right rounded-lg bg-fire-dark-card shadow-lg ring-1 ring-black ring-opacity-5 hidden z-50 sm:w-40">
+                        <div class="py-1 text-sm text-white">
+                            <button type="button"
+                                class="flex w-full items-center gap-2 px-5 py-2 text-left hover:bg-fire-accent/80 rounded-md transition"
+                                onclick="document.getElementById('imageUpload').click()">
+                                <i class="fa-solid fa-image"></i>
+                            </button>
+                            <input type="file" id="imageUpload" accept="image/*" class="hidden"
+                     
+                            <button type="button"
+                                class="flex w-full items-center gap-2 px-5 py-2 text-left hover:bg-fire-accent/80 rounded-md transition"
+                                onclick="document.getElementById('videoUpload').click()">
+                                <i class="fa-solid fa-video"></i>
+                            </button>
+                            <input type="file" id="videoUpload" accept="video/*" class="hidden"
+                                onchange="previewMedia(this, 'video')">
+                        </div>
+                    </div>
+
+                </div>
                 <input type="text" name="message" placeholder="Type your message..." id="message"
                     class="flex-1 bg-fire-light dark:bg-fire-dark-bg text-fire-primary dark:text-fire-light p-3 rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-fire-accent placeholder-fire-secondary dark:placeholder-fire-light-accent">
-                
                 <button id="mic-btn"
                     class="bg-fire-accent text-white px-6 py-3 rounded-lg font-medium shadow-lg hover:bg-fire-secondary transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-fire-light-accent">
                     <i class="fa-solid fa-microphone"></i></button>
