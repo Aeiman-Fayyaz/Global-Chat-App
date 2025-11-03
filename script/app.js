@@ -105,7 +105,7 @@ let mediaRecorder;
 let audioChunks = [];
 let audioStream;
 let isRecording = false;
-let audioBlobUrl = null; 
+let audioBlobUrl = null;
 
 const micButton = document.getElementById("mic-btn");
 const messageInput = document.getElementById("message");
@@ -126,7 +126,7 @@ async function startRecording() {
   try {
     audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
     // Use 'audio/webm' for compatibility
-    mediaRecorder = new MediaRecorder(audioStream, { mimeType: 'audio/webm' }); 
+    mediaRecorder = new MediaRecorder(audioStream, { mimeType: "audio/webm" });
     audioChunks = [];
     audioBlobUrl = null;
 
@@ -134,19 +134,16 @@ async function startRecording() {
       audioChunks.push(event.data);
     };
 
-    mediaRecorder.onstop = processAudioData; 
-    
-    // UI Update for Recording State
-    // messageInput.style.display = 'none'; // Better to keep it disabled
-    messageInput.setAttribute('disabled', 'true');
-    messageInput.value = 'Recording...';
-    micButton.innerHTML = `<i class="fa-solid fa-stop"></i> Stop Recording`;
+    mediaRecorder.onstop = processAudioData;
+
+    messageInput.setAttribute("disabled", "true");
+    messageInput.value = "Recording...";
+    micButton.innerHTML = `<i class="fa-solid fa-stop"></i>`;
     micButton.classList.add("recording");
-    
+
     mediaRecorder.start();
     isRecording = true;
     console.log("Recording started...");
-
   } catch (err) {
     console.error("Error accessing microphone: ", err);
     Swal.fire({
@@ -162,12 +159,12 @@ async function startRecording() {
 function processAudioData() {
   if (!audioChunks.length) return;
 
-  const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+  const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
   audioBlobUrl = URL.createObjectURL(audioBlob); // Temporary URL for sending
-  
+
   // UI Update after stopping
-  messageInput.value = 'Voice Message Ready';
-  micButton.innerHTML = `<i class="fa-solid fa-redo"></i> Retake`;
+  messageInput.value = "Voice Message Ready";
+  micButton.innerHTML = `<i class="fa-solid fa-redo"></i>`;
   micButton.classList.remove("recording");
 }
 
@@ -175,15 +172,15 @@ function processAudioData() {
 function stopRecording() {
   if (mediaRecorder && isRecording) {
     mediaRecorder.stop();
-    audioStream.getTracks().forEach(track => track.stop());
+    audioStream.getTracks().forEach((track) => track.stop());
     isRecording = false;
   }
 }
 
 // Reset UI state when sending a voice message (or cancelling/retaking)
 function resetVoiceUI() {
-  messageInput.removeAttribute('disabled');
-  messageInput.value = '';
+  messageInput.removeAttribute("disabled");
+  messageInput.value = "";
   micButton.innerHTML = `<i class="fa-solid fa-microphone"></i>`;
   micButton.classList.remove("recording");
   audioBlobUrl = null;
@@ -205,7 +202,6 @@ micButton?.addEventListener("click", () => {
   }
 });
 
-
 // Message Function
 function createMessageElement(data, messageId) {
   const container = document.createElement("div");
@@ -224,11 +220,10 @@ function createMessageElement(data, messageId) {
 
   // Message Text/Audio Container
   const messageText = document.createElement("div");
-  
+
   if (data.type === "audio") {
-    // *** FIX: Display the audio player using Base64 data ***
-    const audioSrc = data.audioData; 
-    messageText.classList.add("message-audio"); // Custom class for styling
+    const audioSrc = data.audioData;
+    messageText.classList.add("message-audio"); 
     messageText.innerHTML = `
       <audio controls src="${audioSrc}" class="audio-player"></audio>
       <span class ="time-inside-audio">${data.day} . ${data.time}</span>
@@ -274,23 +269,23 @@ function createMessageElement(data, messageId) {
 // Send Message
 window.sendMessageBtn = async function () {
   const message = document.getElementById("message").value.trim();
-  
-  // --- Voice Message Send Logic ---
+
+  // Voice Message Send
   if (audioBlobUrl) {
     if (audioChunks.length === 0) return;
 
     Swal.fire({
-      title: 'Sending Voice Message...',
-      text: 'Converting audio to Base64...',
+      title: "Sending Voice Message...",
+      text: "Converting audio to Base64...",
       allowOutsideClick: false,
       showConfirmButton: false,
       didOpen: () => {
         Swal.showLoading();
-      }
+      },
     });
 
     try {
-      const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+      const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
       const base64Audio = await blobToBase64(audioBlob); // Convert blob to base64
 
       const now = new Date();
@@ -301,16 +296,17 @@ window.sendMessageBtn = async function () {
       const day = now.toLocaleDateString([], { weekday: "short" });
 
       push(ref(db, "messages"), {
-        audioData: base64Audio, // Store Base64 data
+        // Store Base64 data
+        audioData: base64Audio, 
         type: "audio",
         currentUsername: currentUsername,
         time: time,
         day: day,
       });
-
-      resetVoiceUI(); // Reset UI AFTER successful push
+      // Reset UI AFTER successful push
+      resetVoiceUI();
       Swal.close();
-      return; // Voice message sent, exit function
+      return;
     } catch (error) {
       console.error("Voice Message Send Error: ", error);
       Swal.fire({
@@ -321,9 +317,9 @@ window.sendMessageBtn = async function () {
       resetVoiceUI();
       return;
     }
-  } 
-  
-  // --- Existing Text Message Logic ---
+  }
+
+  // Text Message
   if (message === "") return;
 
   const now = new Date();
@@ -364,10 +360,10 @@ onChildAdded(ref(db, "messages"), (snapshot) => {
 // Update Message Listener
 onChildChanged(ref(db, "messages"), (snapshot) => {
   const data = snapshot.val();
-  
+
   // *** FIX: Only update if it is a text message (Voice cannot be edited) ***
-  if (data.type === "audio") return; 
-  
+  if (data.type === "audio") return;
+
   const existingElement = messageElements[snapshot.key];
   if (existingElement) {
     existingElement.querySelector(".message-text").innerHTML = `
@@ -408,7 +404,7 @@ onChildRemoved(ref(db, "messages"), (snapshot) => {
 window.editMessage = function (messageId, currentText) {
   // Simple check to prevent editing non-text messages if called directly
   const existingData = messageElements[messageId];
-  if (existingData && existingData.querySelector(".message-audio")) return; 
+  if (existingData && existingData.querySelector(".message-audio")) return;
 
   Swal.fire({
     title: "Edit Message",
