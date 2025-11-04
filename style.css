@@ -154,8 +154,8 @@ body{
 }
 
 .audio-player {
-  max-width: 220px;
-  min-width: 200px;
+  max-width: 200px;
+  min-width: 180px;
   margin-bottom: 5px;
   border-radius: 5px;
   background-color: transparent;
