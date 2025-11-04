@@ -100,7 +100,7 @@ document.getElementById("logout-btn")?.addEventListener("click", () => {
 const currentUsername = localStorage.getItem("username");
 let messageElements = {};
 
-// --- Voice Recording Variables & Logic (Using Realtime DB/Base64) ---
+// Voice Recording
 let mediaRecorder;
 let audioChunks = [];
 let audioStream;
@@ -111,7 +111,7 @@ const micButton = document.getElementById("mic-btn");
 const messageInput = document.getElementById("message");
 const sendButton = document.querySelector('button[onclick="sendMessageBtn()"]');
 
-// Record Audio: Blob to Base64 Conversion
+// Blob to Base64
 function blobToBase64(blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -125,7 +125,6 @@ function blobToBase64(blob) {
 async function startRecording() {
   try {
     audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    // Use 'audio/webm' for compatibility
     mediaRecorder = new MediaRecorder(audioStream, { mimeType: "audio/webm" });
     audioChunks = [];
     audioBlobUrl = null;
@@ -151,7 +150,7 @@ async function startRecording() {
       title: "Microphone Access Denied",
       text: "Please allow microphone access to record voice messages.",
     });
-    resetVoiceUI(); // Reset UI on failure
+    resetVoiceUI();
   }
 }
 
@@ -160,12 +159,15 @@ function processAudioData() {
   if (!audioChunks.length) return;
 
   const audioBlob = new Blob(audioChunks, { type: "audio/webm" });
-  audioBlobUrl = URL.createObjectURL(audioBlob); // Temporary URL for sending
+  audioBlobUrl = URL.createObjectURL(audioBlob);
 
   // UI Update after stopping
   messageInput.value = "Voice Message Ready";
   micButton.innerHTML = `<i class="fa-solid fa-redo"></i>`;
   micButton.classList.remove("recording");
+
+  // ✅ Show audio player dynamically (only when recording is done)
+  showAudioPreview(audioBlobUrl);
 }
 
 // Function to stop recording and close the stream
@@ -185,6 +187,10 @@ function resetVoiceUI() {
   micButton.classList.remove("recording");
   audioBlobUrl = null;
   audioChunks = []; // Clear chunks
+
+  // ✅ Remove existing preview (if any)
+  const existingAudio = document.getElementById("voicePreview");
+  if (existingAudio) existingAudio.remove();
 }
 
 // Mic button event listener (Acts as Start/Stop/Retake)
@@ -201,6 +207,22 @@ micButton?.addEventListener("click", () => {
     startRecording();
   }
 });
+
+// ✅ Helper function: show dynamic audio preview
+function showAudioPreview(url) {
+  // Remove old preview if any
+  const old = document.getElementById("voicePreview");
+  if (old) old.remove();
+
+  const audio = document.createElement("audio");
+  audio.id = "voicePreview";
+  audio.src = url;
+  audio.controls = true;
+  audio.classList.add("w-full", "mt-3", "rounded-lg");
+
+  // Insert in your desired container (below input box, or inside chat)
+  document.getElementById("chatMessages").appendChild(audio);
+}
 
 // Message Function
 function createMessageElement(data, messageId) {
@@ -237,8 +259,7 @@ function createMessageElement(data, messageId) {
           : ""
       }
     `;
-  } 
-  else {
+  } else {
     // Text Message Display
     messageText.classList.add("message-text");
     messageText.innerHTML = `
@@ -340,7 +361,7 @@ window.sendMessageBtn = async function () {
   document.getElementById("message").value = "";
 };
 
-// Enter key to send message (Should only work for text)
+// Enter key to send text message
 document.getElementById("message")?.addEventListener("keypress", function (e) {
   if (e.key === "Enter" && !isRecording && !audioBlobUrl) {
     window.sendMessageBtn();
@@ -401,7 +422,6 @@ onChildRemoved(ref(db, "messages"), (snapshot) => {
 
 // Edit Message (Should not work for audio)
 window.editMessage = function (messageId, currentText) {
-  // Simple check to prevent editing non-text messages if called directly
   const existingData = messageElements[messageId];
   if (existingData && existingData.querySelector(".message-audio")) return;
 
@@ -476,45 +496,3 @@ window.deleteMessage = function (messageId) {
     }
   });
 };
-
-// Toggle dropdown visibility
-document.getElementById("attachmentBtn").addEventListener("click", () => {
-  const menu = document.getElementById("attachmentMenu");
-  menu.classList.toggle("hidden");
-});
-
-// Close dropdown when clicking outside
-document.addEventListener("click", (e) => {
-  const btn = document.getElementById("attachmentBtn");
-  const menu = document.getElementById("attachmentMenu");
-  if (!btn.contains(e.target) && !menu.contains(e.target)) {
-    menu.classList.add("hidden");
-  }
-});
-
-// Media Upload
-function previewMedia(input, type) {
-  const file = input.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    const mediaPreview = document.getElementById("mediaPreview");
-    mediaPreview.innerHTML = ""; // clear old preview
-
-    let element;
-    if (type === "image") {
-      element = document.createElement("img");
-      element.src = e.target.result;
-      element.className = "max-h-40 rounded-lg";
-    } else if (type === "video") {
-      element = document.createElement("video");
-      element.src = e.target.result;
-      element.controls = true;
-      element.className = "max-h-40 rounded-lg";
-    }
-
-    mediaPreview.appendChild(element);
-  };
-  reader.readAsDataURL(file); // convert to Base64
-}

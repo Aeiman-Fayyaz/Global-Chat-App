@@ -1,3 +1,10 @@
+@font-face {
+  font-family: "PlayFairDisplay";
+  src: url(./Font/PlayfairDisplay-VariableFont_wght.ttf);
+}
+body{
+  font-family: "PlayFairDisplay", Geneva, Verdana, sans-serif;
+}
 .theme-transition {
   transition: all 0.3s ease;
 }
@@ -147,7 +154,7 @@
 }
 
 .audio-player {
-  max-width: 250px;
+  max-width: 220px;
   min-width: 200px;
   margin-bottom: 5px;
   border-radius: 5px;
@@ -164,12 +171,6 @@
 #mic-btn.recording {
   background-color: #d14141;
   animation: pulse-red 1.5s infinite;
-}
-
-#attachmentMenu {
-  left: 0;
-  /* right: auto; */
-  margin-top: 5px;
 }
 
 @keyframes pulse-red {
@@ -192,9 +193,7 @@
 
   .chat-container button {
     padding: 10px 10px;
-
     font-size: 0.9rem;
-
     white-space: nowrap;
     height: 40px;
     width: 40px;
@@ -214,10 +213,5 @@
   #mic-btn.recording {
     width: auto;
     padding: 10px 12px;
-  }
-  #attachmentMenu {
-    left: 0;
-    right: auto;
-    margin-top: 5px;
   }
 }
