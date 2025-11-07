@@ -64,6 +64,7 @@ document.getElementById("signup-btn")?.addEventListener("click", () => {
         position: "top-end",
         icon: "success",
         title: "Login Sucessful",
+        theme: "auto",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -74,6 +75,7 @@ document.getElementById("signup-btn")?.addEventListener("click", () => {
         position: "top-end",
         icon: "error",
         title: "Login Failed",
+        theme: "auto",
         footer: error.message,
         showConfirmButton: false,
         timer: 1500,
@@ -92,6 +94,7 @@ document.getElementById("login-btn")?.addEventListener("click", () => {
         position: "top-end",
         icon: "success",
         title: "Login Sucessful",
+        theme: "auto",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -102,6 +105,7 @@ document.getElementById("login-btn")?.addEventListener("click", () => {
         position: "top-end",
         icon: "error",
         title: "Login Failed",
+        theme: "auto",
         footer: error.message,
         showConfirmButton: false,
         timer: 1500,
@@ -117,6 +121,7 @@ document.getElementById("google-btn")?.addEventListener("click" , () => {
         position: "top-end",
         icon: "success",
         title: "Login Sucessful",
+        theme: "auto",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -127,6 +132,7 @@ document.getElementById("google-btn")?.addEventListener("click" , () => {
         position: "top-end",
         icon: "error",
         title: "Login Failed",
+        theme: "auto",
         footer: error.message,
         showConfirmButton: false,
         timer: 1500,
@@ -142,6 +148,7 @@ document.getElementById("logout-btn")?.addEventListener("click", () => {
         position: "top-end",
         icon: "success",
         title: "Logiout Sucessful",
+        theme: "auto",
         showConfirmButton: false,
         timer: 1500,
       });
@@ -152,6 +159,7 @@ document.getElementById("logout-btn")?.addEventListener("click", () => {
         position: "top-end",
         icon: "error",
         title: "Logout Failed",
+        theme: "auto",
         footer: error.message,
         showConfirmButton: false,
         timer: 1500,

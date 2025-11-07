@@ -73,27 +73,77 @@ document.getElementById("user-btn")?.addEventListener("click", () => {
 
 // Sign Out
 document.getElementById("logout-btn")?.addEventListener("click", () => {
-  signOut(auth)
-    .then(() => {
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Logout Successful",
-        showConfirmButton: false,
-        timer: 500,
+  Swal.fire({
+    title: "Rate Our App 💬",
+    html: `
+      <div class="rating-container" style="display:flex;justify-content:space-around;gap:10px;margin-top:10px;">
+        <div class="rating-option" data-value="Poor" style="cursor:pointer;font-size:30px;">😞</div>
+        <div class="rating-option" data-value="Fine" style="cursor:pointer;font-size:30px;">😐</div>
+        <div class="rating-option" data-value="Good" style="cursor:pointer;font-size:30px;">🙂</div>
+        <div class="rating-option" data-value="Too Good" style="cursor:pointer;font-size:30px;">😊</div>
+        <div class="rating-option" data-value="Welldone" style="cursor:pointer;font-size:30px;">🤩</div>
+      </div>
+      <p id="selected-rating" style="margin-top:15px;font-weight:500;"></p>
+    `,
+    showCancelButton: true,
+    confirmButtonText: "Save & Logout",
+    cancelButtonText: "Cancel",
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    theme: "auto",
+    allowOutsideClick: false,
+    didOpen: () => {
+      const options =
+        Swal.getHtmlContainer().querySelectorAll(".rating-option");
+      const selected =
+        Swal.getHtmlContainer().querySelector("#selected-rating");
+      options.forEach((opt) => {
+        opt.addEventListener("click", () => {
+          options.forEach((o) => (o.style.transform = "scale(1)"));
+          opt.style.transform = "scale(1.3)";
+          selected.textContent = `You selected: ${opt.dataset.value}`;
+          selected.dataset.value = opt.dataset.value;
+        });
       });
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      Swal.fire({
-        position: "top-end",
-        icon: "error",
-        title: "Logout Failed",
-        footer: error.message,
-        showConfirmButton: false,
-        timer: 500,
-      });
-    });
+    },
+    preConfirm: () => {
+      const selected =
+        Swal.getHtmlContainer().querySelector("#selected-rating").dataset.value;
+      if (!selected) {
+        Swal.showValidationMessage("Please select a rating ⭐");
+        return false;
+      }
+      return selected;
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const rating = result.value;
+      signOut(auth)
+        .then(() => {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: `Logout Successful — Thanks for rating`,
+            theme: "auto",
+            showConfirmButton: false,
+            timer: 1000,
+          });
+          setTimeout(() => {
+            window.location.href = "index.html";
+          }, 1000);
+        })
+        .catch((error) => {
+          Swal.fire({
+            icon: "error",
+            title: "Logout Failed",
+            theme: "auto",
+            text: error.message,
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        });
+    }
+  });
 });
 
 // Username Get
@@ -149,6 +199,7 @@ async function startRecording() {
       icon: "error",
       title: "Microphone Access Denied",
       text: "Please allow microphone access to record voice messages.",
+      theme: "auto",
     });
     resetVoiceUI();
   }
@@ -166,7 +217,7 @@ function processAudioData() {
   micButton.innerHTML = `<i class="fa-solid fa-redo"></i>`;
   micButton.classList.remove("recording");
 
-  // ✅ Show audio player dynamically (only when recording is done)
+  // Show audio player dynamically (only when recording is done)
   showAudioPreview(audioBlobUrl);
 }
 
@@ -188,7 +239,6 @@ function resetVoiceUI() {
   audioBlobUrl = null;
   audioChunks = []; // Clear chunks
 
-  // ✅ Remove existing preview (if any)
   const existingAudio = document.getElementById("voicePreview");
   if (existingAudio) existingAudio.remove();
 }
@@ -208,7 +258,7 @@ micButton?.addEventListener("click", () => {
   }
 });
 
-// ✅ Helper function: show dynamic audio preview
+// Show dynamic audio preview
 function showAudioPreview(url) {
   // Remove old preview if any
   const old = document.getElementById("voicePreview");
@@ -298,6 +348,7 @@ window.sendMessageBtn = async function () {
 
     Swal.fire({
       title: "Sending Voice Message...",
+      theme: "auto",
       text: "Converting audio to Base64...",
       allowOutsideClick: false,
       showConfirmButton: false,
@@ -334,6 +385,7 @@ window.sendMessageBtn = async function () {
       Swal.fire({
         icon: "error",
         title: "Error Sending Voice Message",
+        theme: "auto",
         text: error.message,
       });
       resetVoiceUI();
@@ -428,9 +480,11 @@ window.editMessage = function (messageId, currentText) {
   Swal.fire({
     title: "Edit Message",
     input: "text",
+    theme: "auto",
     inputValue: currentText,
     showCancelButton: true,
     confirmButtonText: "Save",
+    confirmButtonColor: "#d9534f",
     cancelButtonText: "Cancel",
     background: "#fff",
     color: "#333",
@@ -446,6 +500,7 @@ window.editMessage = function (messageId, currentText) {
         Swal.fire({
           icon: "success",
           title: "Message Updated!",
+          theme: "auto",
           showConfirmButton: false,
           timer: 1200,
         });
@@ -455,6 +510,7 @@ window.editMessage = function (messageId, currentText) {
       Swal.fire({
         icon: "error",
         title: "Update Failed",
+        theme: "auto",
         text: error.message,
         showConfirmButton: false,
         timer: 1500,
@@ -467,6 +523,7 @@ window.deleteMessage = function (messageId) {
   Swal.fire({
     title: "Are you sure?",
     text: "This message will be deleted permanently.",
+    theme: "auto",
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#d14141",
@@ -480,6 +537,7 @@ window.deleteMessage = function (messageId) {
           Swal.fire({
             icon: "success",
             title: "Deleted!",
+            theme: "auto",
             showConfirmButton: false,
             timer: 1200,
           });
@@ -488,6 +546,7 @@ window.deleteMessage = function (messageId) {
           Swal.fire({
             icon: "error",
             title: "Delete Failed",
+            theme: "auto",
             text: error.message,
             showConfirmButton: false,
             timer: 1500,
@@ -496,3 +555,5 @@ window.deleteMessage = function (messageId) {
     }
   });
 };
+
+

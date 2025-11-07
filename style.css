@@ -173,6 +173,7 @@ body{
   animation: pulse-red 1.5s infinite;
 }
 
+
 @keyframes pulse-red {
   0% {
     box-shadow: 0 0 0 0 rgba(209, 65, 65, 0.7);
